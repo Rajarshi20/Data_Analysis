@@ -1,5 +1,6 @@
 from initialSetup import setup
 from loadData import load
+from job_data_insights import insights
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 
@@ -15,6 +16,11 @@ def main():
     setup.login(driver, load_username, load_password)
     load.get_jobs_listings(driver, getjob)
     load.load_job_data(driver)
+    #print("Closing driver..")
+    #driver.close()
+    df = insights.job_data_preprocess()
+    insights.job_data_analysis(df)
+    insights.skill_text_analysis(driver, df)
     
     input("Press Enter to exit...")
     

@@ -25,7 +25,7 @@ class load:
     def load_job_data(driver):
         time.sleep(5)
         job_list = []
-        for page in range (1,39):
+        for page in range (1,2):
             page+=1
             job_list_container = driver.find_elements(By.XPATH, "//li[contains(@class,'scaffold-layout__list-item')]")     
             n=0  
@@ -35,7 +35,7 @@ class load:
             time.sleep(5)
             soup = BeautifulSoup(driver.page_source, "html.parser")
             all_jobs = soup.find_all("div", class_=re.compile('display-flex job-card-container'))
-            print(len(all_jobs))
+            #print(len(all_jobs))
             for job in all_jobs:
                 title = job.find("a", class_=re.compile('job-card-list__title--link')).find("strong").get_text(strip=True)
                 company = job.find("div", class_=re.compile('artdeco-entity-lockup__subtitle')).find("span").get_text(strip=True)
@@ -50,3 +50,14 @@ class load:
         df.head()
         df.to_csv("LinkedIn_Jobs.csv", index=False)
     
+    def visit_with_translation(driver, url):
+        # Open the original URL
+        print("Into translation..")
+        driver.get(url)
+        time.sleep(3)
+        print("Translating page to English...")
+        translate_url = f"https://translate.google.com/translate?hl=en&sl=de&tl=en&u={url}"
+        driver.get(translate_url)
+        time.sleep(5)  # Allow time for translation   
+        see_more = driver.find_element(By.XPATH, "//button[contains(@class,'jobs-description')]")
+        see_more.click()
